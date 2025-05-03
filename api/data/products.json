@@ -3,70 +3,70 @@
       "id": "ai001",
       "name": "WriteWise AI",
       "description": "An AI-powered writing assistant that helps you craft perfect essays, emails, and blog posts in seconds.",
-      "price": 14.99,
+      "price": 1949,
       "imageUrl": "ai001.jpg"
     },
     {
       "id": "ai002",
       "name": "CodeCraft Genius",
       "description": "An AI code generator that writes clean, functional code in multiple languages from natural language prompts.",
-    "price": 29.99,
+    "price": 3899,
     "imageUrl": "ai002.jpg"
   },
   {
       "id": "ai003",
       "name": "PixelBoost Enhancer",
       "description": "An AI image enhancer that sharpens and upscales photos using neural upscaling and detail restoration.",
-    "price": 9.99,
+    "price": 1299,
     "imageUrl": "ai003.jpg"
   },
   {
       "id": "ai004",
       "name": "VoiceMorph Studio",
       "description": "Transform your voice with AI to match any tone, age, or accent — perfect for podcasts, games, and dubbing.",
-    "price": 19.99,
+    "price": 2599,
     "imageUrl": "ai004.jpg"
   },
   {
       "id": "ai005",
       "name": "SmartSlides AI",
       "description": "Create stunning presentation slides with AI — just input your topic and let it handle the design and content.",
-    "price": 12.49,
+    "price": 1624,
     "imageUrl": "ai005.jpg"
   },
   {
       "id": "ai006",
       "name": "AdCopy Genie",
       "description": "Generate high-converting ad copy for any platform using customer data and smart tone-matching AI.",
-    "price": 11.99,
+    "price": 1559,
     "imageUrl": "ai006.jpg"
   },
   {
       "id": "ai007",
       "name": "IdeaSpark Brainstormer",
       "description": "A creative AI that helps you generate startup ideas, app concepts, and project names based on trends and your interests.",
-    "price": 7.49,
+    "price": 974,
     "imageUrl": "ai007.jpg"
   },
   {
       "id": "ai008",
       "name": "StyleForge Fashion AI",
       "description": "Suggests outfits and fashion trends tailored to your personality and current wardrobe using AI analysis.",
-    "price": 16.99,
+    "price": 2209,
     "imageUrl": "ai008.jpg"
   },
   {
       "id": "ai009",
       "name": "TutorBot Pro",
       "description": "Your personal AI tutor for coding, math, and science. Breaks down complex topics and quizzes you intelligently.",
-    "price": 13.25,
+    "price": 1723,
     "imageUrl": "ai009.jpg"
   },
   {
       "id": "ai010",
       "name": "Dreamscape Generator",
       "description": "Turn text prompts into stunning dream-like art using advanced diffusion models and customizable settings.",
-    "price": 18.75,
+    "price": 2438,
     "imageUrl": "ai010.jpg"
   }
 ]

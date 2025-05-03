@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import { useCart } from '../context/CartContext'; // Import useCart
 
 function ProductDetailPage() {
-  const { id } = useParams(); // Get product ID from URL parameters
+  const { id } = useParams();
+  const { addToCart } = useCart(); // Get addToCart function
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -63,10 +65,16 @@ function ProductDetailPage() {
         <div className="md:w-1/2">
           <h1 className="text-3xl font-bold mb-3">{product.name}</h1>
           <p className="text-gray-700 mb-4">{product.description}</p>
-          <p className="text-2xl font-semibold text-blue-600 mb-6">${product.price.toFixed(2)}</p>
-          {/* Add to Cart button will go here */}
-          <button className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">
-            Add to Cart (Placeholder)
+          <p className="text-2xl font-semibold text-blue-600 mb-6">KES {product.price.toLocaleString()}</p> {/* Updated currency */}
+          <button
+            onClick={() => {
+              addToCart(product);
+              console.log(`${product.name} added to cart`);
+              // Optionally add user feedback
+            }}
+            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors"
+          >
+            Add to Cart
           </button>
         </div>
       </div>

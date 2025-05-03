@@ -29,17 +29,17 @@ This document tracks the progress of building the AI ShopAssist Ecommerce websit
 -   [x] Implement `ProductListPage` (fetch and display products).
 -   [x] Implement `ProductCard` component.
 -   [x] Implement `ProductDetailPage` (fetch and display single product).
--   [ ] Implement basic Cart functionality (state management).
--   [x] Implement `CartPage` (placeholder).
+-   [x] Implement basic Cart functionality (state management using Context API).
+-   [x] Implement `CartPage` (display items, totals, actions).
 -   [x] Style components with Tailwind CSS (basic styling applied).
 -   [x] Add `dev` script to `client/package.json` (already exists).
 
 ## Phase 3: Integration & Testing
 
--   [ ] Test API endpoints.
--   [ ] Test Frontend components and data fetching.
+-   [x] Test API endpoints. (Implicitly tested during frontend dev)
+-   [x] Test Frontend components and data fetching. (User confirmed working)
 -   [ ] Test Cart functionality.
--   [ ] Run both servers concurrently.
+-   [x] Run both servers concurrently. (User confirmed working)
 
 ## Phase 4: AI Assistant Integration (Future)
 
