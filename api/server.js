@@ -6,7 +6,8 @@ import fs from 'fs/promises';
 import { fileURLToPath } from 'url'; // Needed for __dirname in ESM
 import { anthropic } from '@ai-sdk/anthropic'; // Import anthropic function
 import { streamText } from 'ai'; // Import streamText
-import { getProducts } from './ai-tools.js'; // Import our defined tools (add .js extension for ESM)
+// Import both tools
+import { getProducts, recommendProduct } from './ai-tools.js';
 
 // Get __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -61,9 +62,10 @@ app.get('/api/products/:id', async (req, res) => {
 // Define the system prompt for the AI sales agent (Shortened)
 const systemPrompt = `You are a friendly AI sales assistant for 'AI ShopAssist', an online store for AI software tools.
 Assist users, answer product questions, and help them find the right tool.
-Use the 'getProducts' tool for product info (listing, describing, comparing, recommending).
+You can recommend a specific product to the user using 'recommendProduct' tool: product is required
+Use the 'getProducts' tool for product info (listing, describing, comparing).
 Be conversational. Ask clarifying questions if needed.
-Keep responses concise. Do not include product IDs unless asked.
+Keep responses concise. Do not include product IDs.
 Only use product data from the tool. Do not invent products or features.`;
 
 // POST /api/chat endpoint
@@ -84,8 +86,8 @@ app.post('/api/chat', async (req, res) => {
       system: systemPrompt, // Use shortened system prompt
       messages: recentMessages, // Pass the truncated chat history
       tools: {
-        getProducts, // Provide the getProducts tool
-        // Add other tools here if defined
+        getProducts,
+        recommendProduct, // Register the new tool
       },
       maxSteps: 5, // Allow multiple steps for tool execution and final response
       // Add callbacks based on documentation

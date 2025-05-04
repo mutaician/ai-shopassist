@@ -33,8 +33,25 @@ const getProducts = tool({
   },
 });
 
+// Define the recommendProduct tool
+const recommendProduct = tool({
+  description: 'Call this tool to formally recommend a specific product to the user, providing its ID.',
+  parameters: z.object({
+    productId: z.string().describe('The unique ID of the product being recommended.'),
+  }),
+  execute: async ({ productId }) => {
+    // This tool's primary job is signaling. We can just log it.
+    // We could potentially validate the productId against products.json here if needed.
+    console.log(`AI Tool: recommendProduct called with productId: ${productId}`);
+    // Return a simple object indicating success or the ID itself
+    return { recommendedProductId: productId };
+  },
+});
+
+
 // Export the tools using ESM syntax
 export {
   getProducts,
+  recommendProduct, // Export the new tool
   // Add other tools here if needed later
 };
