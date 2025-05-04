@@ -1,6 +1,6 @@
 import { useChat } from '@ai-sdk/react';
-// Remove useState import
 import PropTypes from 'prop-types'; // Import PropTypes
+import ReactMarkdown from 'react-markdown'; // Import ReactMarkdown
 
 function ChatAgent({ isOpen, toggleChat }) { // Accept props
   // Internal state removed
@@ -17,8 +17,8 @@ function ChatAgent({ isOpen, toggleChat }) { // Accept props
 
       {/* Chat Window (Conditionally Rendered using prop) */}
       {isOpen && (
-         // Change to fixed positioning and adjust top offset below sticky header
-        <div className="fixed top-20 right-4 w-96 h-[500px] bg-white rounded-lg shadow-xl flex flex-col z-10 border"> {/* Changed absolute to fixed */}
+         // Resize window: Use fractional width and viewport height
+        <div className="fixed top-20 right-4 w-1/3 h-[75vh] bg-white rounded-lg shadow-xl flex flex-col z-10 border"> {/* Changed w-96 to w-1/3, h-[500px] to h-[75vh] */}
           {/* Header */}
           <div className="bg-gray-100 p-3 rounded-t-lg border-b flex justify-between items-center">
             <h3 className="font-semibold text-gray-800">AI Shop Assistant</h3>
@@ -33,18 +33,33 @@ function ChatAgent({ isOpen, toggleChat }) { // Accept props
             )}
             {messages.map(m => (
               <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`px-3 py-2 rounded-lg max-w-[80%] ${m.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
-                  {/* Iterate over parts for rendering, focusing on text parts */}
-                  {m.parts.map((part, index) => {
-                    if (part.type === 'text') {
-                      // Render text parts, potentially handling line breaks later if needed
-                      return <span key={`${m.id}-part-${index}`}>{part.text}</span>;
-                    }
-                    // Add rendering for other part types (tool-invocation, etc.) here if needed in the future
-                    return null;
-                  })}
-                  {/* Fallback to content if parts array is somehow empty or not present (shouldn't happen with Vercel AI SDK) */}
-                  {(!m.parts || m.parts.length === 0) && m.content}
+                {/* Add prose class for markdown styling on assistant messages */}
+                <div className={`px-3 py-2 rounded-lg max-w-[80%] ${m.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'} ${m.role === 'assistant' ? 'prose prose-sm' : ''}`}>
+                  {/* Use ReactMarkdown for assistant messages */}
+                  {m.role === 'assistant' ? (
+                    <>
+                      {m.parts.map((part, index) =>
+                        part.type === 'text' ? (
+                          <ReactMarkdown key={`${m.id}-part-${index}`}>
+                            {part.text}
+                          </ReactMarkdown>
+                        ) : null
+                      )}
+                      {(!m.parts || m.parts.length === 0) && (
+                        <ReactMarkdown>{m.content}</ReactMarkdown>
+                      )}
+                    </>
+                  ) : (
+                    // Keep simple rendering for user messages
+                    <>
+                      {m.parts.map((part, index) =>
+                        part.type === 'text' ? (
+                          <span key={`${m.id}-part-${index}`}>{part.text}</span>
+                        ) : null
+                      )}
+                      {(!m.parts || m.parts.length === 0) && m.content}
+                    </>
+                  )}
                 </div>
               </div>
             ))}
@@ -60,13 +75,26 @@ function ChatAgent({ isOpen, toggleChat }) { // Accept props
 
           {/* Input Form */}
           <form onSubmit={handleSubmit} className="p-3 border-t">
-            <input
-              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              value={input}
-              placeholder="Ask something..."
-              onChange={handleInputChange}
-              disabled={status === 'submitted' || status === 'streaming'} // Disable input based on status
-            />
+            <div className="flex items-center space-x-2">
+              <input
+                className="flex-1 border rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100"
+                value={input}
+                placeholder="Ask something..."
+                onChange={handleInputChange}
+                disabled={status === 'submitted' || status === 'streaming'} // Disable input based on status
+              />
+              <button
+                type="submit"
+                className="bg-blue-600 text-white rounded p-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={status === 'submitted' || status === 'streaming' || input.trim() === ''} // Also disable if input is empty
+                aria-label="Send message"
+              >
+                {/* Send Icon (Paper Plane) */}
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                </svg>
+              </button>
+            </div>
           </form>
         </div>
       )}
