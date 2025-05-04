@@ -58,7 +58,6 @@ app.get('/api/products/:id', async (req, res) => {
 
 // --- AI Chat Endpoint ---
 
-// No explicit client initialization needed when using the function directly
 
 // Define the system prompt for the AI sales agent
 const systemPrompt = `You are a friendly and helpful AI sales assistant for 'AI ShopAssist', an online store selling various AI-powered software tools.
@@ -66,6 +65,7 @@ Your goal is to assist users, answer questions about the products, and help them
 You have access to a tool called 'getProducts' which you MUST use whenever you need to list, describe, compare, or recommend products.
 The product prices are in Kenyan Shillings (KES).
 Be conversational and engaging. Ask clarifying questions if the user's request is unclear.
+Make your response short and don't include unnecessary features such as product id.
 Do not make up products or features not listed in the product data obtained via the tool.`; // Use normal backticks
 
 // POST /api/chat endpoint

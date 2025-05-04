@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext'; // Import useCart
+import PropTypes from 'prop-types'; // Import PropTypes
 
-function Header() {
+function Header({ toggleChat }) { // Accept toggleChat prop
   const { totalItems } = useCart(); // Get totalItems from context
 
   return (
@@ -10,6 +11,13 @@ function Header() {
         <Link to="/" className="text-xl font-bold">AI ShopAssist</Link>
         <div>
           <Link to="/" className="px-3 hover:text-gray-300">Products</Link>
+          {/* Add AI Assistant Toggle Button */}
+          <button
+            onClick={toggleChat}
+            className="ml-4 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-500"
+          >
+            AI Assistant
+          </button>
           <Link to="/cart" className="px-3 hover:text-gray-300 relative"> {/* Add relative positioning */}
             Cart
             {totalItems > 0 && ( /* Conditionally render badge */
@@ -23,5 +31,10 @@ function Header() {
     </header>
   );
 }
+
+// Add prop validation
+Header.propTypes = {
+  toggleChat: PropTypes.func.isRequired,
+};
 
 export default Header;

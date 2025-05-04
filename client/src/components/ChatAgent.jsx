@@ -1,37 +1,29 @@
-import { useChat } from 'ai/react';
-import { useState } from 'react';
+import { useChat } from '@ai-sdk/react';
+// Remove useState import
+import PropTypes from 'prop-types'; // Import PropTypes
 
-function ChatAgent() {
-  const [isOpen, setIsOpen] = useState(false); // State to control chat visibility
+function ChatAgent({ isOpen, toggleChat }) { // Accept props
+  // Internal state removed
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+  // Get status instead of isLoading (deprecated)
+  const { messages, input, handleInputChange, handleSubmit, status } = useChat({
     api: 'http://localhost:3001/api/chat', // Point to our backend endpoint
     // We can add initialMessages or other options later if needed
   });
 
-  const toggleChat = () => setIsOpen(!isOpen);
 
   return (
-    <div>
-      {/* Chat Toggle Button (Fixed Position) */}
-      <button
-        onClick={toggleChat}
-        className="fixed bottom-5 right-5 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 z-20"
-        aria-label={isOpen ? 'Close chat' : 'Open chat'}
-      >
-        {/* Simple chat icon (can be replaced with SVG) */}
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-3.03 8.25-6.75 8.25a9.753 9.753 0 0 1-4.597-.981l-4.03 1.107a.75.75 0 0 1-.927-.927l1.107-4.03A9.753 9.753 0 0 1 3 12c0-4.556 3.03-8.25 6.75-8.25S21 7.444 21 12Z" />
-        </svg>
-      </button>
+    <>
 
-      {/* Chat Window (Conditionally Rendered) */}
+      {/* Chat Window (Conditionally Rendered using prop) */}
       {isOpen && (
-        <div className="fixed bottom-20 right-5 w-80 h-96 bg-white rounded-lg shadow-xl flex flex-col z-10 border">
+         // Change to fixed positioning and adjust top offset below sticky header
+        <div className="fixed top-20 right-4 w-96 h-[500px] bg-white rounded-lg shadow-xl flex flex-col z-10 border"> {/* Changed absolute to fixed */}
           {/* Header */}
           <div className="bg-gray-100 p-3 rounded-t-lg border-b flex justify-between items-center">
             <h3 className="font-semibold text-gray-800">AI Shop Assistant</h3>
-            <button onClick={toggleChat} className="text-gray-500 hover:text-gray-700">&times;</button>
+            {/* Increase size of close button further */}
+            <button onClick={toggleChat} className="text-gray-500 hover:text-gray-700 text-4xl font-bold leading-none px-1">&times;</button> 
           </div>
 
           {/* Message List */}
@@ -56,7 +48,8 @@ function ChatAgent() {
                 </div>
               </div>
             ))}
-            {isLoading && (
+            {/* Check status for loading indicator */}
+            {(status === 'submitted' || status === 'streaming') && (
               <div className="flex justify-start">
                  <div className="px-3 py-2 rounded-lg bg-gray-200 text-gray-500 italic">
                    Assistant is typing...
@@ -72,13 +65,19 @@ function ChatAgent() {
               value={input}
               placeholder="Ask something..."
               onChange={handleInputChange}
-              disabled={isLoading}
+              disabled={status === 'submitted' || status === 'streaming'} // Disable input based on status
             />
           </form>
         </div>
       )}
-    </div>
+    </> // Close the fragment
   );
 }
+
+// Add prop validation
+ChatAgent.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  toggleChat: PropTypes.func.isRequired,
+};
 
 export default ChatAgent;
