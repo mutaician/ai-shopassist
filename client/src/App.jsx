@@ -3,6 +3,7 @@ import Header from './components/Header'; // Uncommented
 import ProductListPage from './pages/ProductListPage'; // Uncommented
 import ProductDetailPage from './pages/ProductDetailPage'; // Uncommented
 import CartPage from './pages/CartPage'; // Uncommented
+import ChatAgent from './components/ChatAgent'; // Import the ChatAgent component
 // import './App.css'; // Keep or remove default App styles as needed
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           {/* Add a 404 Not Found route later if needed */}
         </Routes>
       </main>
+      <ChatAgent /> {/* Render the ChatAgent component */}
     </Router>
   );
 }
