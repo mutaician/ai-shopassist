@@ -5,7 +5,7 @@ import path from 'path';
 import fs from 'fs/promises';
 import { fileURLToPath } from 'url'; // Needed for __dirname in ESM
 import { anthropic } from '@ai-sdk/anthropic'; // Import anthropic function
-import { streamText } from 'ai'; // Import streamText (remove toDataStream)
+import { streamText } from 'ai'; // Import streamText
 import { getProducts } from './ai-tools.js'; // Import our defined tools (add .js extension for ESM)
 
 // Get __dirname equivalent in ESM
@@ -58,15 +58,13 @@ app.get('/api/products/:id', async (req, res) => {
 
 // --- AI Chat Endpoint ---
 
-
-// Define the system prompt for the AI sales agent
-const systemPrompt = `You are a friendly and helpful AI sales assistant for 'AI ShopAssist', an online store selling various AI-powered software tools.
-Your goal is to assist users, answer questions about the products, and help them find the right tool for their needs.
-You have access to a tool called 'getProducts' which you MUST use whenever you need to list, describe, compare, or recommend products.
-The product prices are in Kenyan Shillings (KES).
-Be conversational and engaging. Ask clarifying questions if the user's request is unclear.
-Make your response short and don't include unnecessary features such as product id.
-Do not make up products or features not listed in the product data obtained via the tool.`; // Use normal backticks
+// Define the system prompt for the AI sales agent (Shortened)
+const systemPrompt = `You are a friendly AI sales assistant for 'AI ShopAssist', an online store for AI software tools.
+Assist users, answer product questions, and help them find the right tool.
+Use the 'getProducts' tool for product info (listing, describing, comparing, recommending).
+Be conversational. Ask clarifying questions if needed.
+Keep responses concise. Do not include product IDs unless asked.
+Only use product data from the tool. Do not invent products or features.`;
 
 // POST /api/chat endpoint
 app.post('/api/chat', async (req, res) => {
@@ -76,15 +74,20 @@ app.post('/api/chat', async (req, res) => {
     return res.status(400).json({ message: 'Invalid request body: messages array is required.' });
   }
 
+  // Limit message history to the last 8 messages to save tokens
+  const recentMessages = messages.slice(-8);
+
   try {
     const result = await streamText({
-      model: anthropic('claude-3-5-sonnet-20240620'), // Use the imported function directly
-      system: systemPrompt,
-      messages: messages, // Pass the chat history
+      // Change model to Haiku for cost savings
+      model: anthropic('claude-3-haiku-20240307'),
+      system: systemPrompt, // Use shortened system prompt
+      messages: recentMessages, // Pass the truncated chat history
       tools: {
         getProducts, // Provide the getProducts tool
         // Add other tools here if defined
       },
+      maxSteps: 5, // Allow multiple steps for tool execution and final response
       // Add callbacks based on documentation
       onError: (error) => {
         console.error("AI Stream Error:", error);
