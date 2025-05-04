@@ -49,7 +49,7 @@ function ChatAgent({ isOpen, toggleChat }) { // Accept props
             {messages.length === 0 && (
               <p className="text-center text-gray-500 text-sm">Ask me about our AI tools!</p>
             )}
-            {/* Render messages */}
+            {console.log(messages)}
             {messages.map(m => (
               <div key={m.id} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
                 <div className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} w-full`}>
