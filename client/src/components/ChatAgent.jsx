@@ -1,34 +1,15 @@
 import { useChat } from '@ai-sdk/react';
 import PropTypes from 'prop-types'; // Import PropTypes
 import ReactMarkdown from 'react-markdown'; // Import ReactMarkdown
-import { useState } from 'react'; // Import useState
 import RecommendationCardLoader from './RecommendationCardLoader'; // Import the loader
 
 function ChatAgent({ isOpen, toggleChat }) { // Accept props
-  // State to hold the ID of the last recommended product
-  const [lastRecommendedProductId, setLastRecommendedProductId] = useState(null);
 
   // Get status instead of isLoading (deprecated)
   const { messages, input, handleInputChange, handleSubmit, status } = useChat({
     api: 'http://localhost:3001/api/chat', // Point to our backend endpoint
-    onToolCall: ({ toolCall }) => {
-      if (toolCall.toolName === "recommendProduct") {
-        console.log("onToolCall: Setting recommended product ID:", toolCall.args.productId);
-        // Store the ID when the tool is called
-        setLastRecommendedProductId(toolCall.args.productId);
-        return "Handled by the UI";
-      }
-      // If other tools are called, maybe clear the recommendation?
-      // setLastRecommendedProductId(null);
-    },
     // We can add initialMessages or other options later if needed
   });
-
-  // Wrap original handleInputChange to reset recommendation state
-  const handleInputChangeWithReset = (e) => {
-    setLastRecommendedProductId(null); // Clear recommendation when user types
-    handleInputChange(e); // Call original handler
-  };
 
   return (
     <>
@@ -45,30 +26,33 @@ function ChatAgent({ isOpen, toggleChat }) { // Accept props
           </div>
 
           {/* Message List */}
+          {console.log(messages)}
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {messages.length === 0 && (
               <p className="text-center text-gray-500 text-sm">Ask me about our AI tools!</p>
             )}
-            {console.log(messages)}
             {messages.map(m => (
               <div key={m.id} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
+                {/* Render the text part of the message */}
                 <div className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} w-full`}>
                   <div className={`px-3 py-2 rounded-lg max-w-[80%] ${m.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'} ${m.role === 'assistant' ? 'prose prose-sm' : ''}`}>
-                    {/* Render message content using ReactMarkdown */}
-                    {/* Note: We are not iterating parts here anymore for simplicity, relying on m.content */}
                     <ReactMarkdown>{m.content}</ReactMarkdown>
                   </div>
                 </div>
-                {/* Recommendation card rendering is moved outside the loop */}
+
+                {/* Render Recommendation Cards based on toolInvocations */}
+                {m.role === 'assistant' && m.toolInvocations?.map(invocation => {
+                  if (invocation.toolName === 'recommendProduct') {
+                    return (
+                      <div key={invocation.toolCallId} className="mt-2 mb-1"> {/* Add some margin */}
+                        <RecommendationCardLoader productId={invocation.args.productId} />
+                      </div>
+                    );
+                  }
+                  return null; // Render nothing for other tool calls
+                })}
               </div>
             ))}
-
-            {/* Conditionally render RecommendationCardLoader AFTER the loop */}
-            {lastRecommendedProductId && messages.length > 0 && messages[messages.length - 1].role === 'assistant' && (
-              <div className="flex justify-start w-full"> {/* Ensure it aligns left */}
-                 <RecommendationCardLoader productId={lastRecommendedProductId} />
-              </div>
-            )}
 
             {/* Check status for loading indicator */}
             {(status === 'submitted' || status === 'streaming') && (
@@ -87,7 +71,7 @@ function ChatAgent({ isOpen, toggleChat }) { // Accept props
                 className="flex-1 border rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100"
                 value={input}
                 placeholder="Ask something..."
-                onChange={handleInputChangeWithReset} // Use the wrapped handler
+                onChange={handleInputChange} // Revert to original handler
                 disabled={status === 'submitted' || status === 'streaming'} // Disable input based on status
               />
               <button
