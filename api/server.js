@@ -4,7 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import fs from 'fs/promises';
 import { fileURLToPath } from 'url'; // Needed for __dirname in ESM
-import { anthropic } from '@ai-sdk/anthropic'; // Import anthropic function
+import { google } from '@ai-sdk/google'; // Import google function
 import { streamText } from 'ai'; // Import streamText
 import { getProducts, recommendProduct } from './ai-tools.js';
 
@@ -59,11 +59,12 @@ app.get('/api/products/:id', async (req, res) => {
 // --- AI Chat Endpoint ---
 
 // Define the system prompt for the AI sales agent (Shortened)
-const systemPrompt = `You are the best AI sales agent for 'AI ShopAssist', an online store for AI software tools.
-Your main goal is to sell the tools 
-Use the 'getProducts' tool for product info (listing, describing, comparing).
+const systemPrompt = `Act as the best AI sales agent for 'AI ShopAssist', an online store for AI software tools.
+Your main goal is to sell the tools to the user.
+You can answer questions, provide product details, and recommend products.
+Use the 'getProducts' tool for product details (listing, describing, comparing).
 You can recommend a  product to the user using 'recommendProduct' tool, the tool also provides product page for the user
-anytime you mention any product make sure you use the 'recommendProduct' tool
+anytime you mention any product make sure you use the 'recommendProduct' tool with the product ID.
 Be conversational. Ask clarifying questions if needed.
 Keep responses concise and SHORT. Do not include product IDs.
 Only use product data from the tool. Do not invent products or features.`;
@@ -81,8 +82,8 @@ app.post('/api/chat', async (req, res) => {
 
   try {
     const result = await streamText({
-      // Change model to Haiku for cost savings
-      model: anthropic('claude-3-haiku-20240307'),
+      // Change model to Google Gemini
+      model: google('gemini-2.0-flash'),
       system: systemPrompt, // Use shortened system prompt
       messages: recentMessages, // Pass the truncated chat history
       tools: {
