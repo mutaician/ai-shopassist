@@ -25,7 +25,7 @@ AI ShopAssist is an AI-powered shopping assistant web application. It consists o
 
 ### 1. Clone the Repository
 ```zsh
-git clone <your-repo-url>
+git clone https://github.com/mutaician/ai-shopassist.git
 cd ai-shopassist
 ```
 
@@ -42,9 +42,9 @@ pnpm install
 ```
 
 #### Configure Environment Variable
-You need a Google Generative AI API key. Set it in your shell:
+You need a GEMINI AI API key. Set it in your shell as follows:
 ```zsh
-export GOOGLE_GENERATIVE_AI_API_KEY="your-api-key-here"
+export GOOGLE_GENERATIVE_AI_API_KEY="your-gemini-api-key-here"
 ```
 
 #### Start the API server
